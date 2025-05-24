@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Semanal de Horas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #f1f5f9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #f1f5f9;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .week-info {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .week-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .week-selector label {
+            color: #f1f5f9;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+
+        .week-selector input {
+            padding: 8px 12px;
+            border: 2px solid #475569;
+            border-radius: 6px;
+            background: #0f172a;
+            color: #f1f5f9;
+            font-size: 1rem;
+        }
+
+        .week-selector input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .day-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .day-section.saved {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #0f1e17 0%, #1e2d23 100%);
+        }
+
+        .save-indicator {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .day-section.saved .save-indicator {
+            opacity: 1;
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 12px 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .day-section.saved .day-header {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .day-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .day-content {
+            padding: 25px;
+        }
+
+        .time-labels {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 120px;
+            gap: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .time-label {
+            color: #cbd5e1;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .time-inputs-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 120px;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .time-inputs-row input {
+            padding: 12px;
+            border: 2px solid #475569;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #f1f5f9;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .time-inputs-row input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .time-inputs-row input.saved {
+            border-color: #10b981;
+            background: #0f1e17;
+        }
+
+        .total-display {
+            background: #0f172a;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #60a5fa;
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .total-display.saved {
+            border-color: #10b981;
+            color: #34d399;
+            background: #0f1e17;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .save-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #60a5fa);
+            transform: translateY(-1px);
+        }
+
+        .save-btn.saved {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .save-btn.saving {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        .weekly-summary {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .summary-title {
+            color: #f1f5f9;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .summary-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            color: #60a5fa;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .copy-btn, .clear-btn {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, #2563eb, #60a5fa);
+        }
+
+        .clear-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5);
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .status-bar {
+            background: #0f172a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .auto-save-status {
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .last-saved {
+            color: #cbd5e1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .time-labels,
+            .time-inputs-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .time-labels {
+                display: none; /* Ocultar labels en móvil */
+            }
+            
+            .time-inputs-row {
+                gap: 15px;
+            }
+            
+            .time-inputs-row input,
+            .total-display,
+            .save-btn {
+                text-align: center;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .time-labels,
+            .time-inputs-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Registro Semanal de Horas</h1>
+        
+        <div class="status-bar">
+            <div class="auto-save-status" id="autoSaveStatus">
+                🟢 Auto-guardado activado
+            </div>
+            <div class="last-saved" id="lastSaved">
+                Último guardado: Nunca
+            </div>
+        </div>
+        
+        <div class="week-selector">
+            <label for="weekStart">Semana del:</label>
+            <input type="date" id="weekStart">
+        </div>
+        
+        <div class="week-info" id="weekInfo">
+            Cargando información de la semana...
+        </div>
+
+        <div id="daysContainer">
+            <!-- Los días se generarán aquí dinámicamente -->
+        </div>
+
+        <div class="weekly-summary">
+            <div class="summary-title">📊 Resumen Semanal</div>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Total de Horas</div>
+                    <div class="summary-value" id="totalHours">0h 0m</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Días Trabajados</div>
+                    <div class="summary-value" id="daysWorked">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Promedio Diario</div>
+                    <div class="summary-value" id="averageDaily">0h 0m</div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="copy-btn" id="copyBtn">
+                    📋 Copiar Registro
+                </button>
+                <button class="clear-btn" id="clearBtn">
+                    🗑️ Limpiar Semana
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración
+        const daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+        const months = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+
+        // Elementos del DOM
+        const weekStart = document.getElementById('weekStart');
+        const weekInfo = document.getElementById('weekInfo');
+        const daysContainer = document.getElementById('daysContainer');
+        const totalHours = document.getElementById('totalHours');
+        const daysWorked = document.getElementById('daysWorked');
+        const averageDaily = document.getElementById('averageDaily');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const autoSaveStatus = document.getElementById('autoSaveStatus');
+        const lastSaved = document.getElementById('lastSaved');
+
+        // Variables globales
+        let currentWeekKey = '';
+        let autoSaveInterval;
+
+        // Función para obtener el lunes de la semana
+        function getMondayOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day == 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+
+        // Función para formatear fecha
+        function formatDate(date) {
+            try {
+                const day = date.getDate();
+                const month = months[date.getMonth()];
+                return `${day} de ${month}`;
+            } catch(e) {
+                return 'Fecha inválida';
+            }
+        }
+
+        // Función para generar clave de semana
+        function generateWeekKey(mondayDate) {
+            return `week_${mondayDate.getFullYear()}_${mondayDate.getMonth()}_${mondayDate.getDate()}`;
+        }
+
+        // Función para calcular horas entre dos tiempos
+        function calculateHoursBetween(start, end, date) {
+            if (!start || !end) return { hours: 0, minutes: 0, total: 0 };
+            
+            const startTime = new Date(`${date}T${start}`);
+            let endTime = new Date(`${date}T${end}`);
+            
+            if (endTime <= startTime) {
+                endTime.setDate(endTime.getDate() + 1);
+            }
+            
+            const diffMs = endTime - startTime;
+            const hours = Math.floor(diffMs / (1000 * 60 * 60));
+            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            
+            return { hours, minutes, total: diffMs };
+        }
+
+        // Función para guardar datos de un día específico
+        function saveDayData(dayIndex) {
+            const startInput = document.getElementById(`start-${dayIndex}`);
+            const endInput = document.getElementById(`end-${dayIndex}`);
+            const saveBtn = document.getElementById(`save-${dayIndex}`);
+            const daySection = startInput.closest('.day-section');
+            
+            // Simulación de guardado (funciona solo en memoria aquí en Claude)
+            // En GitHub Pages usará localStorage real
+            try {
+                const weekData = JSON.parse(localStorage.getItem(currentWeekKey) || '{}');
+                weekData[`day_${dayIndex}`] = {
+                    start: startInput.value,
+                    end: endInput.value,
+                    saved: true,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem(currentWeekKey, JSON.stringify(weekData));
+            } catch(e) {
+                // Guardado simulado para Claude.ai
+                console.log('Datos guardados (simulación):', {
+                    day: dayIndex,
+                    start: startInput.value,
+                    end: endInput.value
+                });
+            }
+            
+            // Actualizar UI
+            saveBtn.innerHTML = '✅ Guardado';
+            saveBtn.classList.add('saved');
+            daySection.classList.add('saved');
+            startInput.classList.add('saved');
+            endInput.classList.add('saved');
+            
+            updateLastSaved();
+            updateWeeklySummary();
+            
+            setTimeout(() => {
+                saveBtn.innerHTML = '💾 Guardar';
+                saveBtn.classList.remove('saved');
+            }, 2000);
+        }
+
+        // Función para auto-guardar
+        function autoSave() {
+            try {
+                const weekData = JSON.parse(localStorage.getItem(currentWeekKey) || '{}');
+                let hasChanges = false;
+                
+                for (let i = 0; i < 7; i++) {
+                    const startInput = document.getElementById(`start-${i}`);
+                    const endInput = document.getElementById(`end-${i}`);
+                    
+                    if (startInput && endInput) {
+                        const currentData = weekData[`day_${i}`] || {};
+                        
+                        if (currentData.start !== startInput.value || currentData.end !== endInput.value) {
+                            weekData[`day_${i}`] = {
+                                start: startInput.value,
+                                end: endInput.value,
+                                saved: false,
+                                timestamp: new Date().toISOString()
+                            };
+                            hasChanges = true;
+                        }
+                    }
+                }
+                
+                if (hasChanges) {
+                    localStorage.setItem(currentWeekKey, JSON.stringify(weekData));
+                    updateLastSaved();
+                }
+            } catch(e) {
+                // Auto-guardado simulado para Claude.ai
+                console.log('Auto-guardado simulado');
+                updateLastSaved();
+            }
+        }
+
+        // Función para cargar datos guardados
+        function loadWeekData() {
+            try {
+                const weekData = JSON.parse(localStorage.getItem(currentWeekKey) || '{}');
+                
+                for (let i = 0; i < 7; i++) {
+                    const dayData = weekData[`day_${i}`];
+                    const startInput = document.getElementById(`start-${i}`);
+                    const endInput = document.getElementById(`end-${i}`);
+                    
+                    if (startInput && endInput) {
+                        if (dayData) {
+                            startInput.value = dayData.start || '';
+                            endInput.value = dayData.end || '';
+                            
+                            if (dayData.saved) {
+                                const daySection = startInput.closest('.day-section');
+                                if (daySection) {
+                                    daySection.classList.add('saved');
+                                    startInput.classList.add('saved');
+                                    endInput.classList.add('saved');
+                                    const totalEl = document.getElementById(`total-${i}`);
+                                    if (totalEl) totalEl.classList.add('saved');
+                                }
+                            }
+                        }
+                        
+                        updateDayTotal(i);
+                    }
+                }
+            } catch(e) {
+                // En Claude.ai no hay datos que cargar
+            }
+            
+            updateWeeklySummary();
+            updateLastSaved();
+        }
+
+        // Función para actualizar último guardado
+        function updateLastSaved() {
+            const now = new Date();
+            lastSaved.textContent = `Último guardado: ${now.toLocaleTimeString('es-ES')}`;
+        }
+
+        // Función para generar los días de la semana
+        function generateWeek(mondayDate) {
+            // Limpiar contenedor
+            daysContainer.innerHTML = '';
+            currentWeekKey = generateWeekKey(mondayDate);
+            
+            for (let i = 0; i < 7; i++) {
+                const currentDate = new Date(mondayDate);
+                currentDate.setDate(mondayDate.getDate() + i);
+                
+                const daySection = document.createElement('div');
+                daySection.className = 'day-section';
+                daySection.innerHTML = `
+                    <div class="save-indicator">💾 Guardado</div>
+                    <div class="day-header">
+                        <span>${daysOfWeek[i]}</span>
+                        <span class="day-date">${formatDate(currentDate)}</span>
+                    </div>
+                    <div class="day-content">
+                        <div class="time-labels">
+                            <div class="time-label">🟢 Inicio</div>
+                            <div class="time-label">🔴 Fin</div>
+                            <div class="time-label">⏰ Total</div>
+                            <div class="time-label"></div>
+                        </div>
+                        <div class="time-inputs-row">
+                            <input type="time" id="start-${i}" data-day="${i}">
+                            <input type="time" id="end-${i}" data-day="${i}">
+                            <div class="total-display" id="total-${i}">0h 0m</div>
+                            <button class="save-btn" id="save-${i}" onclick="saveDayData(${i})">
+                                💾 Guardar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                daysContainer.appendChild(daySection);
+            }
+            
+            // Agregar event listeners después de crear todos los elementos
+            setTimeout(() => {
+                for (let i = 0; i < 7; i++) {
+                    const startInput = document.getElementById(`start-${i}`);
+                    const endInput = document.getElementById(`end-${i}`);
+                    
+                    if (startInput && endInput) {
+                        startInput.addEventListener('change', () => updateDayTotal(i));
+                        endInput.addEventListener('change', () => updateDayTotal(i));
+                        startInput.addEventListener('input', () => markAsUnsaved(i));
+                        endInput.addEventListener('input', () => markAsUnsaved(i));
+                    }
+                }
+                
+                // Cargar datos existentes
+                loadWeekData();
+            }, 50);
+        }
+
+        // Función para marcar como no guardado
+        function markAsUnsaved(dayIndex) {
+            const daySection = document.querySelector(`#start-${dayIndex}`).closest('.day-section');
+            const startInput = document.getElementById(`start-${dayIndex}`);
+            const endInput = document.getElementById(`end-${dayIndex}`);
+            const totalDisplay = document.getElementById(`total-${dayIndex}`);
+            
+            daySection.classList.remove('saved');
+            startInput.classList.remove('saved');
+            endInput.classList.remove('saved');
+            totalDisplay.classList.remove('saved');
+        }
+
+        // Función para actualizar el total de un día
+        function updateDayTotal(dayIndex) {
+            try {
+                const monday = getMondayOfWeek(new Date(weekStart.value));
+                const currentDate = new Date(monday);
+                currentDate.setDate(monday.getDate() + dayIndex);
+                
+                const startInput = document.getElementById(`start-${dayIndex}`);
+                const endInput = document.getElementById(`end-${dayIndex}`);
+                const totalDisplay = document.getElementById(`total-${dayIndex}`);
+                
+                if (!startInput || !endInput || !totalDisplay) {
+                    return;
+                }
+                
+                const dateString = currentDate.toISOString().split('T')[0];
+                const result = calculateHoursBetween(startInput.value, endInput.value, dateString);
+                
+                totalDisplay.textContent = `${result.hours}h ${result.minutes}m`;
+                
+                updateWeeklySummary();
+            } catch(e) {
+                // Error silencioso
+            }
+        }
+
+        // Función para actualizar el resumen semanal
+        function updateWeeklySummary() {
+            let totalMs = 0;
+            let workingDays = 0;
+            
+            for (let i = 0; i < 7; i++) {
+                const startInput = document.getElementById(`start-${i}`);
+                const endInput = document.getElementById(`end-${i}`);
+                
+                if (startInput && endInput && startInput.value && endInput.value) {
+                    const monday = getMondayOfWeek(new Date(weekStart.value));
+                    const currentDate = new Date(monday);
+                    currentDate.setDate(currentDate.getDate() + i);
+                    const dateString = currentDate.toISOString().split('T')[0];
+                    
+                    const result = calculateHoursBetween(startInput.value, endInput.value, dateString);
+                    totalMs += result.total;
+                    
+                    if (result.total > 0) {
+                        workingDays++;
+                    }
+                }
+            }
+            
+            const totalHoursCalc = Math.floor(totalMs / (1000 * 60 * 60));
+            const totalMinutesCalc = Math.floor((totalMs % (1000 * 60 * 60)) / (1000 * 60));
+            
+            totalHours.textContent = `${totalHoursCalc}h ${totalMinutesCalc}m`;
+            daysWorked.textContent = workingDays;
+            
+            if (workingDays > 0) {
+                const avgMs = totalMs / workingDays;
+                const avgHours = Math.floor(avgMs / (1000 * 60 * 60));
+                const avgMinutes = Math.floor((avgMs % (1000 * 60 * 60)) / (1000 * 60));
+                averageDaily.textContent = `${avgHours}h ${avgMinutes}m`;
+            } else {
+                averageDaily.textContent = '0h 0m';
+            }
+        }
+
+        // Función para actualizar la información de la semana
+        function updateWeekInfo() {
+            const monday = getMondayOfWeek(new Date(weekStart.value));
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            
+            weekInfo.textContent = `Semana del ${formatDate(monday)} al ${formatDate(sunday)}`;
+            
+            // Limpiar contenedor antes de generar
+            daysContainer.innerHTML = '';
+            
+            // Pequeño delay para asegurar que se limpió
+            setTimeout(() => {
+                generateWeek(monday);
+            }, 10);
+        }
+
+        // Función para limpiar semana
+        function clearWeek() {
+            if (confirm('¿Estás seguro de que quieres borrar todos los datos de esta semana?')) {
+                try {
+                    localStorage.removeItem(currentWeekKey);
+                } catch(e) {
+                    console.log('Limpieza simulada en Claude.ai');
+                }
+                generateWeek(getMondayOfWeek(new Date(weekStart.value)));
+                updateWeeklySummary();
+                lastSaved.textContent = 'Último guardado: Datos eliminados';
+            }
+        }
+
+        // Función para copiar al portapapeles
+        async function copyToClipboard() {
+            const monday = getMondayOfWeek(new Date(weekStart.value));
+            let report = `📅 REGISTRO SEMANAL DE HORAS\n`;
+            report += `Semana del ${formatDate(monday)} al ${formatDate(new Date(monday.getTime() + 6 * 24 * 60 * 60 * 1000))}\n\n`;
+            
+            for (let i = 0; i < 7; i++) {
+                const startInput = document.getElementById(`start-${i}`);
+                const endInput = document.getElementById(`end-${i}`);
+                const totalDisplay = document.getElementById(`total-${i}`);
+                
+                const currentDate = new Date(monday);
+                currentDate.setDate(monday.getDate() + i);
+                
+                report += `${daysOfWeek[i].toUpperCase()} - ${formatDate(currentDate)}\n`;
+                report += `Inicio: ${startInput.value || 'No registrado'}\n`;
+                report += `Fin: ${endInput.value || 'No registrado'}\n`;
+                report += `Total: ${totalDisplay.textContent}\n\n`;
+            }
+            
+            report += `📊 RESUMEN SEMANAL:\n`;
+            report += `Total de horas: ${totalHours.textContent}\n`;
+            report += `Días trabajados: ${daysWorked.textContent}\n`;
+            report += `Promedio diario: ${averageDaily.textContent}\n\n`;
+            report += `Generado el ${new Date().toLocaleString('es-ES')}`;
+
+            try {
+                await navigator.clipboard.writeText(report);
+                
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ ¡Copiado!';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Error al copiar: ', err);
+                alert('No se pudo copiar al portapapeles');
+            }
+        }
+
+        // Inicialización
+        function init() {
+            const today = new Date();
+            const monday = getMondayOfWeek(today);
+            weekStart.value = monday.toISOString().split('T')[0];
+            
+            // Verificar si localStorage está disponible
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                autoSaveStatus.innerHTML = '🟢 Auto-guardado activado';
+            } catch(e) {
+                autoSaveStatus.innerHTML = '🟡 Modo demostración (funciona en GitHub Pages)';
+                autoSaveStatus.style.color = '#fbbf24';
+            }
+            
+            // Configurar auto-guardado cada 30 segundos
+            autoSaveInterval = setInterval(autoSave, 30000);
+            
+            // Auto-guardar antes de cerrar la página
+            window.addEventListener('beforeunload', autoSave);
+            
+            updateWeekInfo();
+            updateLastSaved();
+        }
+
+        // Event listeners
+        weekStart.addEventListener('change', updateWeekInfo);
+        copyBtn.addEventListener('click', copyToClipboard);
+        clearBtn.addEventListener('click', clearWeek);
+
+        // Hacer funciones globales para los onclick
+        window.saveDayData = saveDayData;
+
+        // Inicializar la aplicación cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            // Si el DOM ya está cargado, ejecutar inmediatamente
+            setTimeout(init, 100);
+        }
+    </script>
+</body>
+</html>
