@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Semanal de Horas Avanzado</title>
+    <title>Sistema de Registro Multi-Empleados</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             padding: 30px;
@@ -37,163 +37,95 @@
             font-weight: 600;
         }
 
-        /* Panel desplegable styles */
-        .collapsible-panel {
+        /* Employee card styles */
+        .employee-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            margin-bottom: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            margin-bottom: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .collapsible-panel.expanded {
-            border-color: #3b82f6;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        .employee-card.boss {
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
         }
 
-        .panel-header {
+        .employee-header {
             background: linear-gradient(135deg, #1e40af, #3b82f6);
             color: white;
-            padding: 15px 20px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
             transition: all 0.3s ease;
-            user-select: none;
         }
 
-        .panel-header:hover {
+        .employee-card.boss .employee-header {
+            background: linear-gradient(135deg, #d97706, #fbbf24);
+        }
+
+        .employee-header:hover {
             background: linear-gradient(135deg, #2563eb, #60a5fa);
         }
 
-        .panel-header.expanded {
-            background: linear-gradient(135deg, #059669, #10b981);
+        .employee-card.boss .employee-header:hover {
+            background: linear-gradient(135deg, #f59e0b, #fcd34d);
         }
 
-        .panel-toggle {
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .panel-header.expanded .panel-toggle {
-            transform: rotate(180deg);
-        }
-
-        .panel-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .panel-content.expanded {
-            max-height: 2000px;
-        }
-
-        .panel-inner {
-            padding: 25px;
-        }
-
-        /* Salary panel specific styles */
-        .salary-panel .panel-header {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
-        }
-
-        .salary-panel .panel-header:hover {
-            background: linear-gradient(135deg, #8b5cf6, #c084fc);
-        }
-
-        .salary-panel .panel-header.expanded {
-            background: linear-gradient(135deg, #059669, #10b981);
-        }
-
-        .salary-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .salary-dropdown {
+        .employee-info {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .salary-dropdown label {
-            color: #cbd5e1;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .salary-dropdown select {
-            padding: 12px;
-            border: 2px solid #475569;
-            border-radius: 8px;
-            background: #0f172a;
-            color: #f1f5f9;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .salary-dropdown select:focus {
-            outline: none;
-            border-color: #a855f7;
-            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
-        }
-
-        .salary-summary {
-            background: #0f172a;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #a855f7;
-            margin-top: 20px;
-        }
-
-        .salary-row {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+            gap: 15px;
         }
 
-        .salary-row:last-child {
-            border-bottom: none;
+        .employee-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .employee-details h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .employee-role {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .employee-summary {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        .hours-worked {
+            font-size: 1.2rem;
             font-weight: bold;
+            color: #60a5fa;
+        }
+
+        .salary-amount {
             font-size: 1.1rem;
+            font-weight: bold;
             color: #34d399;
         }
 
-        .salary-label {
-            color: #cbd5e1;
-            font-size: 0.95rem;
+        .employee-content {
+            padding: 25px;
+            display: none;
         }
 
-        .salary-value {
-            color: #a855f7;
-            font-weight: 600;
-        }
-
-        .total-salary {
-            color: #34d399 !important;
-            font-size: 1.3rem !important;
-            text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
-        }
-
-        .week-info {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: white;
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        .employee-content.expanded {
+            display: block;
         }
 
         .week-selector {
@@ -216,224 +148,130 @@
             font-size: 1rem;
         }
 
-        .week-selector input:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
-
-        .day-section {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            margin-bottom: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .day-section.saved {
-            border-color: #10b981;
-            background: linear-gradient(135deg, #0f1e17 0%, #1e2d23 100%);
-        }
-
-        .save-indicator {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: #10b981;
+        .week-info {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
             font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
-        .day-section.saved .save-indicator {
-            opacity: 1;
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .day-card {
+            background: #0f172a;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .day-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
 
         .day-header {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: white;
-            padding: 12px 20px;
-            font-size: 1.3rem;
-            font-weight: 700;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+            font-weight: 600;
         }
 
-        .day-section.saved .day-header {
-            background: linear-gradient(135deg, #059669, #10b981);
+        .day-name {
+            font-size: 1.1rem;
+            color: #60a5fa;
         }
 
         .day-date {
             font-size: 0.9rem;
-            opacity: 0.9;
+            opacity: 0.8;
         }
 
-        .day-content {
-            padding: 25px;
-        }
-
-        .time-labels {
+        .time-inputs {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 120px;
-            gap: 20px;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .time-label {
-            color: #cbd5e1;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .time-inputs-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 120px;
-            gap: 20px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
             align-items: center;
         }
 
-        .time-inputs-row input {
-            padding: 12px;
-            border: 2px solid #475569;
-            border-radius: 8px;
-            background: #0f172a;
+        .time-input {
+            padding: 8px;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            background: #1e293b;
             color: #f1f5f9;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
 
-        .time-inputs-row input:focus {
+        .time-input:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
-        .time-inputs-row input.saved {
-            border-color: #10b981;
-            background: #0f1e17;
-        }
-
-        .total-display {
-            background: #0f172a;
-            border: 2px solid #3b82f6;
-            border-radius: 8px;
-            padding: 12px;
+        .day-total {
             text-align: center;
+            padding: 8px;
+            background: #1e293b;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 1.1rem;
             color: #60a5fa;
-            text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .total-display.saved {
-            border-color: #10b981;
-            color: #34d399;
-            background: #0f1e17;
-        }
-
-        .save-btn {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: white;
-            border: none;
-            padding: 12px 15px;
-            border-radius: 8px;
             font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
         }
 
-        .save-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #60a5fa);
-            transform: translateY(-1px);
-        }
-
-        .save-btn.saved {
-            background: linear-gradient(135deg, #059669, #10b981);
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .summary-item {
+        .employee-salary-summary {
             background: #0f172a;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .summary-label {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-
-        .summary-value {
-            color: #60a5fa;
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            border: 2px solid #a855f7;
+            border-radius: 10px;
+            padding: 20px;
             margin-top: 20px;
         }
 
-        .copy-btn, .clear-btn {
-            background: linear-gradient(135deg, #1e40af, #3b82f6);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 1.1rem;
+        .employee-card.boss .employee-salary-summary {
+            border-color: #fbbf24;
+        }
+
+        .salary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .salary-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #34d399;
+        }
+
+        .salary-label {
+            color: #cbd5e1;
+        }
+
+        .salary-value {
+            color: #a855f7;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
         }
 
-        .clear-btn {
-            background: linear-gradient(135deg, #dc2626, #ef4444);
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        .employee-card.boss .salary-value {
+            color: #fbbf24;
         }
 
-        .copy-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
-            background: linear-gradient(135deg, #2563eb, #60a5fa);
-        }
-
-        .clear-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5);
-            background: linear-gradient(135deg, #b91c1c, #dc2626);
-        }
-
-        .copy-btn.copied {
-            background: linear-gradient(135deg, #059669, #10b981);
+        .total-salary {
+            color: #34d399 !important;
+            font-size: 1.3rem !important;
         }
 
         .status-bar {
@@ -496,53 +334,83 @@
             color: #a855f7;
         }
 
+        .global-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .action-btn.danger:hover {
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .action-btn.success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .action-btn.success:hover {
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 15px;
                 margin: 10px;
             }
-            
-            .time-labels,
-            .time-inputs-row {
+
+            .days-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .time-inputs {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .employee-info {
+                flex-direction: column;
+                text-align: center;
                 gap: 10px;
             }
-            
-            .time-labels {
-                display: none;
-            }
-            
-            .time-inputs-row {
-                gap: 15px;
-            }
-            
-            .time-inputs-row input,
-            .total-display,
-            .save-btn {
+
+            .employee-summary {
                 text-align: center;
             }
-            
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .salary-controls {
-                grid-template-columns: 1fr;
-            }
-            
+
             h1 {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📅 Registro Semanal de Horas Avanzado</h1>
+        <h1>👥 Sistema de Registro Multi-Empleados</h1>
         
         <div class="reset-notification" id="resetNotification">
             🔄 ¡Nueva semana iniciada automáticamente! Los datos de la semana anterior se mantienen guardados.
@@ -570,92 +438,20 @@
             Cargando información de la semana...
         </div>
 
-        <!-- Panel 1: Resumen Semanal -->
-        <div class="collapsible-panel" id="summaryPanel">
-            <div class="panel-header" onclick="togglePanel('summaryPanel')">
-                <span>📊 Resumen Semanal de Horas</span>
-                <span class="panel-toggle">▼</span>
-            </div>
-            <div class="panel-content" id="summaryContent">
-                <div class="panel-inner">
-                    <div class="summary-grid">
-                        <div class="summary-item">
-                            <div class="summary-label">Total de Horas</div>
-                            <div class="summary-value" id="totalHours">0h 0m</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label">Días Trabajados</div>
-                            <div class="summary-value" id="daysWorked">0</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-label">Promedio Diario</div>
-                            <div class="summary-value" id="averageDaily">0h 0m</div>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="copy-btn" id="copyBtn">
-                            📋 Copiar Registro
-                        </button>
-                        <button class="clear-btn" id="clearBtn">
-                            🗑️ Limpiar Semana
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div id="employeesContainer">
+            <!-- Los empleados se generarán aquí dinámicamente -->
         </div>
 
-        <!-- Panel 2: Cálculo Salarial -->
-        <div class="collapsible-panel salary-panel" id="salaryPanel">
-            <div class="panel-header" onclick="togglePanel('salaryPanel')">
-                <span>💰 Cálculo Salarial en Colones</span>
-                <span class="panel-toggle">▼</span>
-            </div>
-            <div class="panel-content" id="salaryContent">
-                <div class="panel-inner">
-                    <div class="salary-controls">
-                        <div class="salary-dropdown">
-                            <label for="jobRole">👔 Puesto de Trabajo:</label>
-                            <select id="jobRole" onchange="calculateSalary()">
-                                <option value="">Seleccionar puesto...</option>
-                                <option value="jefe">👨‍💼 Jefe - ₡4,500/hora</option>
-                                <option value="peon">👷‍♂️ Peón - ₡2,000/hora</option>
-                            </select>
-                        </div>
-                        <div class="salary-dropdown">
-                            <label for="paymentType">💵 Tipo de Pago:</label>
-                            <select id="paymentType" onchange="calculateSalary()">
-                                <option value="hourly">Por Horas</option>
-                                <option value="daily">Por Día (8h)</option>
-                                <option value="weekly">Semanal Completa</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="salary-summary" id="salarySummary" style="display: none;">
-                        <div class="salary-row">
-                            <span class="salary-label">Horas Trabajadas:</span>
-                            <span class="salary-value" id="workedHoursDisplay">0h 0m</span>
-                        </div>
-                        <div class="salary-row">
-                            <span class="salary-label">Tarifa por Hora:</span>
-                            <span class="salary-value" id="hourlyRateDisplay">₡0</span>
-                        </div>
-                        <div class="salary-row">
-                            <span class="salary-label">Días Trabajados:</span>
-                            <span class="salary-value" id="daysWorkedDisplay">0</span>
-                        </div>
-                        <div class="salary-row">
-                            <span class="salary-label">Salario Total:</span>
-                            <span class="salary-value total-salary" id="totalSalaryDisplay">₡0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="daysContainer">
-            <!-- Los días se generarán aquí dinámicamente -->
+        <div class="global-actions">
+            <button class="action-btn success" onclick="generateWeeklyReport()">
+                📊 Generar Reporte Completo
+            </button>
+            <button class="action-btn" onclick="copyAllData()">
+                📋 Copiar Todos los Datos
+            </button>
+            <button class="action-btn danger" onclick="clearAllData()">
+                🗑️ Limpiar Toda la Semana
+            </button>
         </div>
     </div>
 
@@ -667,101 +463,491 @@
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
 
-        // Tarifas salariales en colones
-        const salaryRates = {
-            jefe: 4500,
-            peon: 2000
-        };
+        // Configuración de empleados
+        const employees = [
+            {
+                id: 'boss',
+                name: 'Jefe Principal',
+                role: 'Supervisor General',
+                hourlyRate: 4500,
+                avatar: '👨‍💼',
+                isBoss: true
+            },
+            {
+                id: 'employee1',
+                name: 'Empleado 1',
+                role: 'Peón',
+                hourlyRate: 2000,
+                avatar: '👷‍♂️',
+                isBoss: false
+            },
+            {
+                id: 'employee2',
+                name: 'Empleado 2',
+                role: 'Peón',
+                hourlyRate: 2000,
+                avatar: '👷‍♀️',
+                isBoss: false
+            },
+            {
+                id: 'employee3',
+                name: 'Empleado 3',
+                role: 'Peón',
+                hourlyRate: 2000,
+                avatar: '👨‍🔧',
+                isBoss: false
+            },
+            {
+                id: 'employee4',
+                name: 'Empleado 4',
+                role: 'Peón',
+                hourlyRate: 2000,
+                avatar: '👩‍🔧',
+                isBoss: false
+            },
+            {
+                id: 'employee5',
+                name: 'Empleado 5',
+                role: 'Peón',
+                hourlyRate: 2000,
+                avatar: '👨‍🏭',
+                isBoss: false
+            }
+        ];
 
         // Elementos del DOM
         const weekStart = document.getElementById('weekStart');
         const weekInfo = document.getElementById('weekInfo');
-        const daysContainer = document.getElementById('daysContainer');
-        const totalHours = document.getElementById('totalHours');
-        const daysWorked = document.getElementById('daysWorked');
-        const averageDaily = document.getElementById('averageDaily');
-        const copyBtn = document.getElementById('copyBtn');
-        const clearBtn = document.getElementById('clearBtn');
+        const employeesContainer = document.getElementById('employeesContainer');
         const autoSaveStatus = document.getElementById('autoSaveStatus');
         const lastSaved = document.getElementById('lastSaved');
         const resetNotification = document.getElementById('resetNotification');
         const countdownInfo = document.getElementById('countdownInfo');
-
-        // Elementos del panel salarial
-        const jobRole = document.getElementById('jobRole');
-        const paymentType = document.getElementById('paymentType');
-        const salarySummary = document.getElementById('salarySummary');
-        const workedHoursDisplay = document.getElementById('workedHoursDisplay');
-        const hourlyRateDisplay = document.getElementById('hourlyRateDisplay');
-        const daysWorkedDisplay = document.getElementById('daysWorkedDisplay');
-        const totalSalaryDisplay = document.getElementById('totalSalaryDisplay');
 
         // Variables globales
         let currentWeekKey = '';
         let autoSaveInterval;
         let weekCheckInterval;
         let countdownInterval;
-        let totalWorkedMinutes = 0;
-        let totalWorkedDays = 0;
 
-        // Función para alternar paneles desplegables
-        function togglePanel(panelId) {
-            const panel = document.getElementById(panelId);
-            const header = panel.querySelector('.panel-header');
-            const content = panel.querySelector('.panel-content');
+        // Función para obtener el lunes de la semana
+        function getMondayOfWeek(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day == 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+
+        // Función para formatear fecha
+        function formatDate(date) {
+            try {
+                const day = date.getDate();
+                const month = months[date.getMonth()];
+                return `${day} de ${month}`;
+            } catch(e) {
+                return 'Fecha inválida';
+            }
+        }
+
+        // Función para generar clave de semana
+        function generateWeekKey(mondayDate) {
+            return `week_${mondayDate.getFullYear()}_${mondayDate.getMonth()}_${mondayDate.getDate()}`;
+        }
+
+        // Función para calcular horas entre dos tiempos
+        function calculateHoursBetween(start, end, date) {
+            if (!start || !end) return { hours: 0, minutes: 0, totalMinutes: 0 };
             
-            const isExpanded = panel.classList.contains('expanded');
+            const startTime = new Date(`${date}T${start}`);
+            let endTime = new Date(`${date}T${end}`);
+            
+            if (endTime <= startTime) {
+                endTime.setDate(endTime.getDate() + 1);
+            }
+            
+            const diffMs = endTime - startTime;
+            const hours = Math.floor(diffMs / (1000 * 60 * 60));
+            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            const totalMinutes = hours * 60 + minutes;
+            
+            return { hours, minutes, totalMinutes };
+        }
+
+        // Función para alternar empleado
+        function toggleEmployee(employeeId) {
+            const card = document.getElementById(`card-${employeeId}`);
+            const content = document.getElementById(`content-${employeeId}`);
+            
+            const isExpanded = content.classList.contains('expanded');
             
             if (isExpanded) {
-                panel.classList.remove('expanded');
-                header.classList.remove('expanded');
                 content.classList.remove('expanded');
             } else {
-                panel.classList.add('expanded');
-                header.classList.add('expanded');
                 content.classList.add('expanded');
             }
         }
 
-        // Función para calcular salario
-        function calculateSalary() {
-            const selectedRole = jobRole.value;
-            const selectedPaymentType = paymentType.value;
+        // Función para actualizar el total de un día específico de un empleado
+        function updateDayTotal(employeeId, dayIndex) {
+            const monday = getMondayOfWeek(new Date(weekStart.value));
+            const currentDate = new Date(monday);
+            currentDate.setDate(monday.getDate() + dayIndex);
             
-            if (!selectedRole) {
-                salarySummary.style.display = 'none';
-                return;
-            }
+            const startInput = document.getElementById(`${employeeId}-start-${dayIndex}`);
+            const endInput = document.getElementById(`${employeeId}-end-${dayIndex}`);
+            const totalDisplay = document.getElementById(`${employeeId}-total-${dayIndex}`);
             
-            salarySummary.style.display = 'block';
+            if (!startInput || !endInput || !totalDisplay) return;
             
-            const hourlyRate = salaryRates[selectedRole];
-            const totalHoursDecimal = totalWorkedMinutes / 60;
+            const dateString = currentDate.toISOString().split('T')[0];
+            const result = calculateHoursBetween(startInput.value, endInput.value, dateString);
             
-            let totalSalary = 0;
+            totalDisplay.textContent = `${result.hours}h ${result.minutes}m`;
             
-            switch (selectedPaymentType) {
-                case 'hourly':
-                    totalSalary = Math.round(totalHoursDecimal * hourlyRate);
-                    break;
-                case 'daily':
-                    totalSalary = totalWorkedDays * hourlyRate * 8;
-                    break;
-                case 'weekly':
-                    totalSalary = hourlyRate * 40;
-                    break;
-            }
-            
-            const hours = Math.floor(totalWorkedMinutes / 60);
-            const minutes = totalWorkedMinutes % 60;
-            
-            workedHoursDisplay.textContent = `${hours}h ${minutes}m`;
-            hourlyRateDisplay.textContent = `₡${hourlyRate.toLocaleString()}`;
-            daysWorkedDisplay.textContent = totalWorkedDays;
-            totalSalaryDisplay.textContent = `₡${totalSalary.toLocaleString()}`;
+            updateEmployeeSummary(employeeId);
+            autoSave();
         }
 
-        // Función para obtener el próximo lunes a las 00:00
+        // Función para actualizar el resumen de un empleado
+        function updateEmployeeSummary(employeeId) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            let totalMinutes = 0;
+            let workingDays = 0;
+            
+            for (let i = 0; i < 7; i++) {
+                const startInput = document.getElementById(`${employeeId}-start-${i}`);
+                const endInput = document.getElementById(`${employeeId}-end-${i}`);
+                
+                if (startInput && endInput && startInput.value && endInput.value) {
+                    const monday = getMondayOfWeek(new Date(weekStart.value));
+                    const currentDate = new Date(monday);
+                    currentDate.setDate(monday.getDate() + i);
+                    const dateString = currentDate.toISOString().split('T')[0];
+                    
+                    const result = calculateHoursBetween(startInput.value, endInput.value, dateString);
+                    totalMinutes += result.totalMinutes;
+                    
+                    if (result.totalMinutes > 0) {
+                        workingDays++;
+                    }
+                }
+            }
+            
+            const totalHours = Math.floor(totalMinutes / 60);
+            const remainingMinutes = totalMinutes % 60;
+            const totalSalary = Math.round((totalMinutes / 60) * employee.hourlyRate);
+            
+            // Actualizar header del empleado
+            const hoursDisplay = document.getElementById(`${employeeId}-hours`);
+            const salaryDisplay = document.getElementById(`${employeeId}-salary`);
+            
+            if (hoursDisplay) hoursDisplay.textContent = `${totalHours}h ${remainingMinutes}m`;
+            if (salaryDisplay) salaryDisplay.textContent = `₡${totalSalary.toLocaleString()}`;
+            
+            // Actualizar resumen detallado
+            const summaryHours = document.getElementById(`${employeeId}-summary-hours`);
+            const summaryDays = document.getElementById(`${employeeId}-summary-days`);
+            const summaryRate = document.getElementById(`${employeeId}-summary-rate`);
+            const summaryTotal = document.getElementById(`${employeeId}-summary-total`);
+            
+            if (summaryHours) summaryHours.textContent = `${totalHours}h ${remainingMinutes}m`;
+            if (summaryDays) summaryDays.textContent = workingDays;
+            if (summaryRate) summaryRate.textContent = `₡${employee.hourlyRate.toLocaleString()}`;
+            if (summaryTotal) summaryTotal.textContent = `₡${totalSalary.toLocaleString()}`;
+        }
+
+        // Función para generar una tarjeta de empleado
+        function generateEmployeeCard(employee) {
+            const monday = getMondayOfWeek(new Date(weekStart.value));
+            
+            let daysHTML = '';
+            for (let i = 0; i < 7; i++) {
+                const currentDate = new Date(monday);
+                currentDate.setDate(monday.getDate() + i);
+                
+                daysHTML += `
+                    <div class="day-card">
+                        <div class="day-header">
+                            <span class="day-name">${daysOfWeek[i]}</span>
+                            <span class="day-date">${formatDate(currentDate)}</span>
+                        </div>
+                        <div class="time-inputs">
+                            <input type="time" 
+                                   id="${employee.id}-start-${i}" 
+                                   class="time-input" 
+                                   placeholder="Inicio"
+                                   onchange="updateDayTotal('${employee.id}', ${i})">
+                            <input type="time" 
+                                   id="${employee.id}-end-${i}" 
+                                   class="time-input" 
+                                   placeholder="Fin"
+                                   onchange="updateDayTotal('${employee.id}', ${i})">
+                            <div class="day-total" id="${employee.id}-total-${i}">0h 0m</div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="employee-card ${employee.isBoss ? 'boss' : ''}" id="card-${employee.id}">
+                    <div class="employee-header" onclick="toggleEmployee('${employee.id}')">
+                        <div class="employee-info">
+                            <div class="employee-avatar">${employee.avatar}</div>
+                            <div class="employee-details">
+                                <h3>${employee.name}</h3>
+                                <div class="employee-role">${employee.role} - ₡${employee.hourlyRate.toLocaleString()}/hora</div>
+                            </div>
+                        </div>
+                        <div class="employee-summary">
+                            <div class="hours-worked" id="${employee.id}-hours">0h 0m</div>
+                            <div class="salary-amount" id="${employee.id}-salary">₡0</div>
+                        </div>
+                    </div>
+                    <div class="employee-content" id="content-${employee.id}">
+                        <div class="days-grid">
+                            ${daysHTML}
+                        </div>
+                        <div class="employee-salary-summary">
+                            <div class="salary-row">
+                                <span class="salary-label">Horas Trabajadas:</span>
+                                <span class="salary-value" id="${employee.id}-summary-hours">0h 0m</span>
+                            </div>
+                            <div class="salary-row">
+                                <span class="salary-label">Días Trabajados:</span>
+                                <span class="salary-value" id="${employee.id}-summary-days">0</span>
+                            </div>
+                            <div class="salary-row">
+                                <span class="salary-label">Tarifa por Hora:</span>
+                                <span class="salary-value" id="${employee.id}-summary-rate">₡${employee.hourlyRate.toLocaleString()}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span class="salary-label">Salario Total:</span>
+                                <span class="salary-value total-salary" id="${employee.id}-summary-total">₡0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Función para generar todos los empleados
+        function generateAllEmployees() {
+            employeesContainer.innerHTML = '';
+            currentWeekKey = generateWeekKey(getMondayOfWeek(new Date(weekStart.value)));
+            
+            employees.forEach(employee => {
+                const cardHTML = generateEmployeeCard(employee);
+                employeesContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+            
+            // Cargar datos guardados después de un breve delay
+            setTimeout(() => {
+                loadAllData();
+            }, 100);
+        }
+
+        // Función para auto-guardar
+        function autoSave() {
+            try {
+                const weekData = {};
+                
+                employees.forEach(employee => {
+                    const employeeData = {};
+                    for (let i = 0; i < 7; i++) {
+                        const startInput = document.getElementById(`${employee.id}-start-${i}`);
+                        const endInput = document.getElementById(`${employee.id}-end-${i}`);
+                        
+                        if (startInput && endInput) {
+                            employeeData[`day_${i}`] = {
+                                start: startInput.value,
+                                end: endInput.value,
+                                timestamp: new Date().toISOString()
+                            };
+                        }
+                    }
+                    weekData[employee.id] = employeeData;
+                });
+                
+                localStorage.setItem(currentWeekKey, JSON.stringify(weekData));
+                updateLastSaved();
+            } catch(e) {
+                console.log('Auto-guardado simulado');
+                updateLastSaved();
+            }
+        }
+
+        // Función para cargar todos los datos
+        function loadAllData() {
+            try {
+                const weekData = JSON.parse(localStorage.getItem(currentWeekKey) || '{}');
+                
+                employees.forEach(employee => {
+                    const employeeData = weekData[employee.id] || {};
+                    
+                    for (let i = 0; i < 7; i++) {
+                        const dayData = employeeData[`day_${i}`];
+                        const startInput = document.getElementById(`${employee.id}-start-${i}`);
+                        const endInput = document.getElementById(`${employee.id}-end-${i}`);
+                        
+                        if (startInput && endInput && dayData) {
+                            startInput.value = dayData.start || '';
+                            endInput.value = dayData.end || '';
+                            updateDayTotal(employee.id, i);
+                        }
+                    }
+                    
+                    updateEmployeeSummary(employee.id);
+                });
+            } catch(e) {
+                console.log('No hay datos guardados para cargar');
+            }
+        }
+
+        // Función para actualizar último guardado
+        function updateLastSaved() {
+            const now = new Date();
+            lastSaved.textContent = `Último guardado: ${now.toLocaleTimeString('es-ES')}`;
+        }
+
+        // Función para actualizar la información de la semana
+        function updateWeekInfo() {
+            const monday = getMondayOfWeek(new Date(weekStart.value));
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            
+            weekInfo.textContent = `Semana del ${formatDate(monday)} al ${formatDate(sunday)}`;
+            
+            generateAllEmployees();
+        }
+
+        // Función para generar reporte semanal completo
+        function generateWeeklyReport() {
+            const monday = getMondayOfWeek(new Date(weekStart.value));
+            let report = `📋 REPORTE SEMANAL COMPLETO\n`;
+            report += `Semana del ${formatDate(monday)} al ${formatDate(new Date(monday.getTime() + 6 * 24 * 60 * 60 * 1000))}\n\n`;
+            
+            let totalPayroll = 0;
+            
+            employees.forEach(employee => {
+                let employeeTotalMinutes = 0;
+                let employeeWorkingDays = 0;
+                
+                report += `${employee.avatar} ${employee.name.toUpperCase()} - ${employee.role}\n`;
+                report += `Tarifa: ₡${employee.hourlyRate.toLocaleString()}/hora\n`;
+                report += `${'─'.repeat(40)}\n`;
+                
+                for (let i = 0; i < 7; i++) {
+                    const startInput = document.getElementById(`${employee.id}-start-${i}`);
+                    const endInput = document.getElementById(`${employee.id}-end-${i}`);
+                    
+                    const currentDate = new Date(monday);
+                    currentDate.setDate(monday.getDate() + i);
+                    
+                    if (startInput && endInput) {
+                        const start = startInput.value || 'No registrado';
+                        const end = endInput.value || 'No registrado';
+                        
+                        if (start !== 'No registrado' && end !== 'No registrado') {
+                            const dateString = currentDate.toISOString().split('T')[0];
+                            const result = calculateHoursBetween(start, end, dateString);
+                            employeeTotalMinutes += result.totalMinutes;
+                            if (result.totalMinutes > 0) employeeWorkingDays++;
+                            
+                            report += `${daysOfWeek[i]} ${formatDate(currentDate)}: ${start} - ${end} (${result.hours}h ${result.minutes}m)\n`;
+                        } else {
+                            report += `${daysOfWeek[i]} ${formatDate(currentDate)}: No trabajó\n`;
+                        }
+                    }
+                }
+                
+                const totalHours = Math.floor(employeeTotalMinutes / 60);
+                const totalMinutes = employeeTotalMinutes % 60;
+                const salary = Math.round((employeeTotalMinutes / 60) * employee.hourlyRate);
+                totalPayroll += salary;
+                
+                report += `\nResumen:\n`;
+                report += `• Total horas: ${totalHours}h ${totalMinutes}m\n`;
+                report += `• Días trabajados: ${employeeWorkingDays}\n`;
+                report += `• Salario: ₡${salary.toLocaleString()}\n\n`;
+            });
+            
+            report += `💰 RESUMEN GENERAL:\n`;
+            report += `Total nómina semanal: ₡${totalPayroll.toLocaleString()}\n`;
+            report += `Generado el: ${new Date().toLocaleString('es-ES')}\n`;
+            
+            // Mostrar en una ventana nueva o copiar al portapapeles
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(report).then(() => {
+                    alert('📋 Reporte completo copiado al portapapeles');
+                }).catch(() => {
+                    showReportModal(report);
+                });
+            } else {
+                showReportModal(report);
+            }
+        }
+        
+        // Función para mostrar reporte en modal
+        function showReportModal(report) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); z-index: 1000; display: flex;
+                align-items: center; justify-content: center; padding: 20px;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: #1e293b; border-radius: 10px; padding: 30px; max-width: 800px; max-height: 80%; overflow-y: auto; color: #f1f5f9;">
+                    <h2 style="margin-bottom: 20px; color: #60a5fa;">📋 Reporte Semanal Completo</h2>
+                    <pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem; line-height: 1.4;">${report}</pre>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                style="background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Función para copiar todos los datos
+        function copyAllData() {
+            generateWeeklyReport();
+        }
+
+        // Función para limpiar todos los datos
+        function clearAllData() {
+            if (confirm('¿Estás seguro de que quieres borrar TODOS los datos de esta semana para TODOS los empleados?')) {
+                try {
+                    localStorage.removeItem(currentWeekKey);
+                } catch(e) {
+                    console.log('Limpieza simulada');
+                }
+                
+                // Limpiar todos los inputs
+                employees.forEach(employee => {
+                    for (let i = 0; i < 7; i++) {
+                        const startInput = document.getElementById(`${employee.id}-start-${i}`);
+                        const endInput = document.getElementById(`${employee.id}-end-${i}`);
+                        
+                        if (startInput) startInput.value = '';
+                        if (endInput) endInput.value = '';
+                        
+                        updateDayTotal(employee.id, i);
+                    }
+                    updateEmployeeSummary(employee.id);
+                });
+                
+                updateLastSaved();
+                alert('✅ Todos los datos han sido eliminados');
+            }
+        }
+
+        // Funciones de reinicio automático
         function getNextMondayMidnight() {
             const now = new Date();
             const nextMonday = new Date(now);
@@ -781,7 +967,6 @@
             return nextMonday;
         }
 
-        // Función para actualizar countdown
         function updateCountdown() {
             const now = new Date();
             const nextReset = getNextMondayMidnight();
@@ -810,7 +995,6 @@
             countdownInfo.textContent = countdownText;
         }
 
-        // Función para verificar si necesita reinicio automático
         function checkForWeekReset() {
             try {
                 const lastWeekCheck = localStorage.getItem('lastWeekCheck');
@@ -834,7 +1018,6 @@
             }
         }
 
-        // Función para mostrar notificación de reinicio
         function showResetNotification() {
             resetNotification.classList.add('show');
             
@@ -843,7 +1026,6 @@
             }, 5000);
         }
 
-        // Función para reiniciar a nueva semana
         function resetToNewWeek() {
             const today = new Date();
             const monday = getMondayOfWeek(today);
@@ -854,49 +1036,6 @@
             console.log('Semana reiniciada automáticamente:', formatDate(monday));
         }
 
-        // Función para obtener el lunes de la semana
-        function getMondayOfWeek(date) {
-            const d = new Date(date);
-            const day = d.getDay();
-            const diff = d.getDate() - day + (day == 0 ? -6 : 1);
-            return new Date(d.setDate(diff));
-        }
-
-        // Función para formatear fecha
-        function formatDate(date) {
-            try {
-                const day = date.getDate();
-                const month = months[date.getMonth()];
-                return `${day} de ${month}`;
-            } catch(e) {
-                return 'Fecha inválida';
-            }
-        }
-
-        // Función para generar clave de semana
-        function generateWeekKey(mondayDate) {
-            return `week_${mondayDate.getFullYear()}_${mondayDate.getMonth()}_${mondayDate.getDate()}`;
-        }
-
-        // Función para calcular horas entre dos tiempos
-        function calculateHoursBetween(start, end, date) {
-            if (!start || !end) return { hours: 0, minutes: 0, total: 0 };
-            
-            const startTime = new Date(`${date}T${start}`);
-            let endTime = new Date(`${date}T${end}`);
-            
-            if (endTime <= startTime) {
-                endTime.setDate(endTime.getDate() + 1);
-            }
-            
-            const diffMs = endTime - startTime;
-            const hours = Math.floor(diffMs / (1000 * 60 * 60));
-            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-            
-            return { hours, minutes, total: diffMs };
-        }
-
-        // Función principal de verificación de reinicio
         function performWeeklyCheck() {
             const now = new Date();
             
@@ -908,349 +1047,6 @@
             if (checkForWeekReset()) {
                 console.log('🔄 Detectado cambio de semana, reiniciando...');
                 resetToNewWeek();
-            }
-        }
-
-        // Función para guardar datos de un día específico
-        function saveDayData(dayIndex) {
-            const startInput = document.getElementById(`start-${dayIndex}`);
-            const endInput = document.getElementById(`end-${dayIndex}`);
-            const saveBtn = document.getElementById(`save-${dayIndex}`);
-            const daySection = startInput.closest('.day-section');
-            
-            try {
-                const weekData = JSON.parse(localStorage.getItem(currentWeekKey) || '{}');
-                weekData[`day_${dayIndex}`] = {
-                    start: startInput.value,
-                    end: endInput.value,
-                    saved: true,
-                    timestamp: new Date().toISOString()
-                };
-                localStorage.setItem(currentWeekKey, JSON.stringify(weekData));
-            } catch(e) {
-                console.log('Datos guardados (simulación):', {
-                    day: dayIndex,
-                    start: startInput.value,
-                    end: endInput.value
-                });
-            }
-            
-            saveBtn.innerHTML = '✅ Guardado';
-            saveBtn.classList.add('saved');
-            daySection.classList.add('saved');
-            startInput.classList.add('saved');
-            endInput.classList.add('saved');
-            
-            updateLastSaved();
-            updateWeeklySummary();
-            
-            setTimeout(() => {
-                saveBtn.innerHTML = '💾 Guardar';
-                saveBtn.classList.remove('saved');
-            }, 2000);
-        }
-
-        // Función para auto-guardar
-        function autoSave() {
-            try {
-                const weekData = JSON.parse(localStorage.getItem(currentWeekKey) || '{}');
-                let hasChanges = false;
-                
-                for (let i = 0; i < 7; i++) {
-                    const startInput = document.getElementById(`start-${i}`);
-                    const endInput = document.getElementById(`end-${i}`);
-                    
-                    if (startInput && endInput) {
-                        const currentData = weekData[`day_${i}`] || {};
-                        
-                        if (currentData.start !== startInput.value || currentData.end !== endInput.value) {
-                            weekData[`day_${i}`] = {
-                                start: startInput.value,
-                                end: endInput.value,
-                                saved: false,
-                                timestamp: new Date().toISOString()
-                            };
-                            hasChanges = true;
-                        }
-                    }
-                }
-                
-                if (hasChanges) {
-                    localStorage.setItem(currentWeekKey, JSON.stringify(weekData));
-                    updateLastSaved();
-                }
-            } catch(e) {
-                console.log('Auto-guardado simulado');
-                updateLastSaved();
-            }
-        }
-
-        // Función para cargar datos guardados
-        function loadWeekData() {
-            try {
-                const weekData = JSON.parse(localStorage.getItem(currentWeekKey) || '{}');
-                
-                for (let i = 0; i < 7; i++) {
-                    const dayData = weekData[`day_${i}`];
-                    const startInput = document.getElementById(`start-${i}`);
-                    const endInput = document.getElementById(`end-${i}`);
-                    
-                    if (startInput && endInput) {
-                        if (dayData) {
-                            startInput.value = dayData.start || '';
-                            endInput.value = dayData.end || '';
-                            
-                            if (dayData.saved) {
-                                const daySection = startInput.closest('.day-section');
-                                if (daySection) {
-                                    daySection.classList.add('saved');
-                                    startInput.classList.add('saved');
-                                    endInput.classList.add('saved');
-                                    const totalEl = document.getElementById(`total-${i}`);
-                                    if (totalEl) totalEl.classList.add('saved');
-                                }
-                            }
-                        }
-                        
-                        updateDayTotal(i);
-                    }
-                }
-            } catch(e) {
-                // En Claude.ai no hay datos que cargar
-            }
-            
-            updateWeeklySummary();
-            updateLastSaved();
-        }
-
-        // Función para actualizar último guardado
-        function updateLastSaved() {
-            const now = new Date();
-            lastSaved.textContent = `Último guardado: ${now.toLocaleTimeString('es-ES')}`;
-        }
-
-        // Función para generar los días de la semana
-        function generateWeek(mondayDate) {
-            daysContainer.innerHTML = '';
-            currentWeekKey = generateWeekKey(mondayDate);
-            
-            for (let i = 0; i < 7; i++) {
-                const currentDate = new Date(mondayDate);
-                currentDate.setDate(mondayDate.getDate() + i);
-                
-                const daySection = document.createElement('div');
-                daySection.className = 'day-section';
-                daySection.innerHTML = `
-                    <div class="save-indicator">💾 Guardado</div>
-                    <div class="day-header">
-                        <span>${daysOfWeek[i]}</span>
-                        <span class="day-date">${formatDate(currentDate)}</span>
-                    </div>
-                    <div class="day-content">
-                        <div class="time-labels">
-                            <div class="time-label">🟢 Inicio</div>
-                            <div class="time-label">🔴 Fin</div>
-                            <div class="time-label">⏰ Total</div>
-                            <div class="time-label"></div>
-                        </div>
-                        <div class="time-inputs-row">
-                            <input type="time" id="start-${i}" data-day="${i}">
-                            <input type="time" id="end-${i}" data-day="${i}">
-                            <div class="total-display" id="total-${i}">0h 0m</div>
-                            <button class="save-btn" id="save-${i}" onclick="saveDayData(${i})">
-                                💾 Guardar
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                daysContainer.appendChild(daySection);
-            }
-            
-            setTimeout(() => {
-                for (let i = 0; i < 7; i++) {
-                    const startInput = document.getElementById(`start-${i}`);
-                    const endInput = document.getElementById(`end-${i}`);
-                    
-                    if (startInput && endInput) {
-                        startInput.addEventListener('change', () => updateDayTotal(i));
-                        endInput.addEventListener('change', () => updateDayTotal(i));
-                        startInput.addEventListener('input', () => markAsUnsaved(i));
-                        endInput.addEventListener('input', () => markAsUnsaved(i));
-                    }
-                }
-                
-                loadWeekData();
-            }, 50);
-        }
-
-        // Función para marcar como no guardado
-        function markAsUnsaved(dayIndex) {
-            const daySection = document.querySelector(`#start-${dayIndex}`).closest('.day-section');
-            const startInput = document.getElementById(`start-${dayIndex}`);
-            const endInput = document.getElementById(`end-${dayIndex}`);
-            const totalDisplay = document.getElementById(`total-${dayIndex}`);
-            
-            daySection.classList.remove('saved');
-            startInput.classList.remove('saved');
-            endInput.classList.remove('saved');
-            totalDisplay.classList.remove('saved');
-        }
-
-        // Función para actualizar el total de un día
-        function updateDayTotal(dayIndex) {
-            try {
-                const monday = getMondayOfWeek(new Date(weekStart.value));
-                const currentDate = new Date(monday);
-                currentDate.setDate(monday.getDate() + dayIndex);
-                
-                const startInput = document.getElementById(`start-${dayIndex}`);
-                const endInput = document.getElementById(`end-${dayIndex}`);
-                const totalDisplay = document.getElementById(`total-${dayIndex}`);
-                
-                if (!startInput || !endInput || !totalDisplay) {
-                    return;
-                }
-                
-                const dateString = currentDate.toISOString().split('T')[0];
-                const result = calculateHoursBetween(startInput.value, endInput.value, dateString);
-                
-                totalDisplay.textContent = `${result.hours}h ${result.minutes}m`;
-                
-                updateWeeklySummary();
-            } catch(e) {
-                // Error silencioso
-            }
-        }
-
-        // Función para actualizar el resumen semanal
-        function updateWeeklySummary() {
-            let totalMs = 0;
-            let workingDays = 0;
-            
-            for (let i = 0; i < 7; i++) {
-                const startInput = document.getElementById(`start-${i}`);
-                const endInput = document.getElementById(`end-${i}`);
-                
-                if (startInput && endInput && startInput.value && endInput.value) {
-                    const monday = getMondayOfWeek(new Date(weekStart.value));
-                    const currentDate = new Date(monday);
-                    currentDate.setDate(currentDate.getDate() + i);
-                    const dateString = currentDate.toISOString().split('T')[0];
-                    
-                    const result = calculateHoursBetween(startInput.value, endInput.value, dateString);
-                    totalMs += result.total;
-                    
-                    if (result.total > 0) {
-                        workingDays++;
-                    }
-                }
-            }
-            
-            const totalHoursCalc = Math.floor(totalMs / (1000 * 60 * 60));
-            const totalMinutesCalc = Math.floor((totalMs % (1000 * 60 * 60)) / (1000 * 60));
-            
-            // Actualizar variables globales para cálculo salarial
-            totalWorkedMinutes = totalHoursCalc * 60 + totalMinutesCalc;
-            totalWorkedDays = workingDays;
-            
-            totalHours.textContent = `${totalHoursCalc}h ${totalMinutesCalc}m`;
-            daysWorked.textContent = workingDays;
-            
-            if (workingDays > 0) {
-                const avgMs = totalMs / workingDays;
-                const avgHours = Math.floor(avgMs / (1000 * 60 * 60));
-                const avgMinutes = Math.floor((avgMs % (1000 * 60 * 60)) / (1000 * 60));
-                averageDaily.textContent = `${avgHours}h ${avgMinutes}m`;
-            } else {
-                averageDaily.textContent = '0h 0m';
-            }
-            
-            // Recalcular salario si hay un rol seleccionado
-            calculateSalary();
-        }
-
-        // Función para actualizar la información de la semana
-        function updateWeekInfo() {
-            const monday = getMondayOfWeek(new Date(weekStart.value));
-            const sunday = new Date(monday);
-            sunday.setDate(monday.getDate() + 6);
-            
-            weekInfo.textContent = `Semana del ${formatDate(monday)} al ${formatDate(sunday)}`;
-            
-            daysContainer.innerHTML = '';
-            
-            setTimeout(() => {
-                generateWeek(monday);
-            }, 10);
-        }
-
-        // Función para limpiar semana
-        function clearWeek() {
-            if (confirm('¿Estás seguro de que quieres borrar todos los datos de esta semana?')) {
-                try {
-                    localStorage.removeItem(currentWeekKey);
-                } catch(e) {
-                    console.log('Limpieza simulada en Claude.ai');
-                }
-                generateWeek(getMondayOfWeek(new Date(weekStart.value)));
-                updateWeeklySummary();
-                lastSaved.textContent = 'Último guardado: Datos eliminados';
-            }
-        }
-
-        // Función para copiar al portapapeles
-        async function copyToClipboard() {
-            const monday = getMondayOfWeek(new Date(weekStart.value));
-            let report = `📅 REGISTRO SEMANAL DE HORAS\n`;
-            report += `Semana del ${formatDate(monday)} al ${formatDate(new Date(monday.getTime() + 6 * 24 * 60 * 60 * 1000))}\n\n`;
-            
-            for (let i = 0; i < 7; i++) {
-                const startInput = document.getElementById(`start-${i}`);
-                const endInput = document.getElementById(`end-${i}`);
-                const totalDisplay = document.getElementById(`total-${i}`);
-                
-                const currentDate = new Date(monday);
-                currentDate.setDate(monday.getDate() + i);
-                
-                report += `${daysOfWeek[i].toUpperCase()} - ${formatDate(currentDate)}\n`;
-                report += `Inicio: ${startInput.value || 'No registrado'}\n`;
-                report += `Fin: ${endInput.value || 'No registrado'}\n`;
-                report += `Total: ${totalDisplay.textContent}\n\n`;
-            }
-            
-            report += `📊 RESUMEN SEMANAL:\n`;
-            report += `Total de horas: ${totalHours.textContent}\n`;
-            report += `Días trabajados: ${daysWorked.textContent}\n`;
-            report += `Promedio diario: ${averageDaily.textContent}\n\n`;
-            
-            // Agregar información salarial si está disponible
-            if (jobRole.value) {
-                const roleName = jobRole.value === 'jefe' ? 'Jefe' : 'Peón';
-                const rate = salaryRates[jobRole.value];
-                report += `💰 CÁLCULO SALARIAL:\n`;
-                report += `Puesto: ${roleName}\n`;
-                report += `Tarifa: ₡${rate.toLocaleString()}/hora\n`;
-                report += `Salario total: ${totalSalaryDisplay.textContent}\n\n`;
-            }
-            
-            report += `Generado el ${new Date().toLocaleString('es-ES')}`;
-
-            try {
-                await navigator.clipboard.writeText(report);
-                
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = '✅ ¡Copiado!';
-                copyBtn.classList.add('copied');
-                
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.classList.remove('copied');
-                }, 2000);
-                
-            } catch (err) {
-                console.error('Error al copiar: ', err);
-                alert('No se pudo copiar al portapapeles');
             }
         }
 
@@ -1285,13 +1081,11 @@
             updateCountdown();
             updateLastSaved();
             
-            console.log('📅 Sistema de registro semanal avanzado iniciado con reinicio automático los lunes a las 00:00');
+            console.log('👥 Sistema multi-empleados iniciado con reinicio automático los lunes a las 00:00');
         }
 
         // Event listeners
         weekStart.addEventListener('change', updateWeekInfo);
-        copyBtn.addEventListener('click', copyToClipboard);
-        clearBtn.addEventListener('click', clearWeek);
 
         // Cleanup al cerrar
         window.addEventListener('beforeunload', () => {
