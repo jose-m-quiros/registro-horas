@@ -947,29 +947,30 @@
             }
         }
 
-        // Funciones de reinicio automático
-        function getNextMondayMidnight() {
+        // **FUNCIONES DE REINICIO AUTOMÁTICO - MODIFICADAS PARA DOMINGOS 00:00**
+        function getNextSundayMidnight() {
             const now = new Date();
-            const nextMonday = new Date(now);
+            const nextSunday = new Date(now);
             
-            let daysUntilMonday;
+            // Calcular días hasta el próximo domingo
+            let daysUntilSunday;
             if (now.getDay() === 0) {
-                daysUntilMonday = 1;
-            } else if (now.getDay() === 1) {
-                daysUntilMonday = 7;
+                // Si hoy es domingo, el próximo es en 7 días
+                daysUntilSunday = 7;
             } else {
-                daysUntilMonday = 8 - now.getDay();
+                // Días hasta el próximo domingo
+                daysUntilSunday = 7 - now.getDay();
             }
             
-            nextMonday.setDate(now.getDate() + daysUntilMonday);
-            nextMonday.setHours(0, 0, 0, 0);
+            nextSunday.setDate(now.getDate() + daysUntilSunday);
+            nextSunday.setHours(0, 0, 0, 0);
             
-            return nextMonday;
+            return nextSunday;
         }
 
         function updateCountdown() {
             const now = new Date();
-            const nextReset = getNextMondayMidnight();
+            const nextReset = getNextSundayMidnight();
             const diff = nextReset - now;
             
             if (diff <= 0) {
@@ -991,7 +992,7 @@
                 countdownText += `${minutes}m`;
             }
             
-            countdownText += ` (lunes 00:00)`;
+            countdownText += ` (domingo 00:00)`;
             countdownInfo.textContent = countdownText;
         }
 
@@ -1039,11 +1040,13 @@
         function performWeeklyCheck() {
             const now = new Date();
             
-            if (now.getDay() === 1 && now.getHours() === 0 && now.getMinutes() === 0) {
-                console.log('🔄 Iniciando reinicio automático del lunes...');
+            // Verificar si es domingo a las 00:00 (medianoche)
+            if (now.getDay() === 0 && now.getHours() === 0 && now.getMinutes() === 0) {
+                console.log('🔄 Iniciando reinicio automático del domingo a medianoche...');
                 resetToNewWeek();
             }
             
+            // Verificación adicional para cambio de semana
             if (checkForWeekReset()) {
                 console.log('🔄 Detectado cambio de semana, reiniciando...');
                 resetToNewWeek();
@@ -1059,7 +1062,7 @@
             try {
                 localStorage.setItem('test', 'test');
                 localStorage.removeItem('test');
-                autoSaveStatus.innerHTML = '🟢 Auto-guardado y reinicio automático activados';
+                autoSaveStatus.innerHTML = '🟢 Auto-guardado y reinicio automático activados (domingos 00:00)';
             } catch(e) {
                 autoSaveStatus.innerHTML = '🟡 Modo demostración (funciona completamente en GitHub Pages)';
                 autoSaveStatus.style.color = '#fbbf24';
@@ -1081,7 +1084,7 @@
             updateCountdown();
             updateLastSaved();
             
-            console.log('👥 Sistema multi-empleados iniciado con reinicio automático los lunes a las 00:00');
+            console.log('👥 Sistema multi-empleados iniciado con reinicio automático los domingos a las 00:00');
         }
 
         // Event listeners
